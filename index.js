@@ -80,8 +80,9 @@ async function iniciarBot() {
 
       if (!texto) continue; // ignorar stickers, audios, documentos sin caption, etc.
 
-      const jid     = msg.key.remoteJid;
-      const usuario = jid.replace('@s.whatsapp.net', '');
+      const jid = msg.key.remoteJid;
+      // Normalizar usuario: quitar sufijos @s.whatsapp.net y @lid
+      const usuario = jid.replace(/@s\.whatsapp\.net$/, '').replace(/@lid$/, '');
 
       console.log(`📨 [${usuario}]: ${texto}`);
 
@@ -101,8 +102,8 @@ async function iniciarBot() {
         // null = mensaje silenciado por rate limit de intervalo corto
         if (respuesta === null) continue;
 
-        // Enviar respuesta
-        await sock.sendMessage(jid, { text: respuesta });
+        // Enviar respuesta — { quoted: msg } resuelve JIDs @lid correctamente
+        await sock.sendMessage(jid, { text: respuesta }, { quoted: msg });
         console.log(`✅ Respondido a ${usuario}`);
       } catch (err) {
         // Asegurar que el indicador de escritura se detiene aunque haya error
