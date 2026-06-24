@@ -1,7 +1,7 @@
 const Database = require('better-sqlite3');
 const path     = require('path');
 
-const DB_PATH     = path.join(__dirname, 'historial.db');
+const DB_PATH     = process.env.DB_PATH || path.join(__dirname, 'historial.db'); // en Render: /data/historial.db
 const MAX_MENSAJES = 40;  // máximo de mensajes por usuario en memoria de Claude
 const DIAS_RETENER = 7;   // mensajes más antiguos que esto se eliminan de la DB
 

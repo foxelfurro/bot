@@ -9,7 +9,7 @@ const qrcode = require('qrcode-terminal');
 const pino   = require('pino');
 const { procesarMensaje } = require('./bot');
 
-const AUTH_DIR = './auth_info'; // carpeta donde se guarda la sesión de WhatsApp
+const AUTH_DIR = process.env.AUTH_DIR || './auth_info'; // en Render: /data/auth_info
 
 async function iniciarBot() {
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
