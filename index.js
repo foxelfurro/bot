@@ -1,4 +1,6 @@
 require('dotenv').config();
+// Forzar stdout sin buffer para que los logs aparezcan en tiempo real en Render
+if (process.stdout._handle) process.stdout._handle.setBlocking(true);
 const {
   default: makeWASocket,
   useMultiFileAuthState,
@@ -7,6 +9,7 @@ const {
 } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 const pino   = require('pino');
+const fs     = require('fs');
 const { procesarMensaje } = require('./bot');
 
 const AUTH_DIR = process.env.AUTH_DIR || './auth_info'; // en Render: /data/auth_info
@@ -47,8 +50,9 @@ async function iniciarBot() {
         console.log(`⏳ Reconectando en ${espera / 1000}s...`);
         setTimeout(iniciarBot, espera);
       } else {
-        console.log('🚪 Sesión cerrada (logout). Elimina auth_info/ y reinicia para escanear de nuevo.');
-        process.exit(0);
+        console.log('🚪 Sesión cerrada (logout). Borrando credenciales y reiniciando en 3s...');
+        fs.rmSync(AUTH_DIR, { recursive: true, force: true });
+        setTimeout(() => process.exit(0), 3000);
       }
     }
   });
