@@ -14,6 +14,9 @@ const { procesarMensaje } = require('./bot');
 
 const AUTH_DIR = process.env.AUTH_DIR || './auth_info'; // en Render: /data/auth_info
 
+// Crear el directorio de credenciales si no existe
+fs.mkdirSync(AUTH_DIR, { recursive: true });
+
 async function iniciarBot() {
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
   const { version } = await fetchLatestBaileysVersion();
